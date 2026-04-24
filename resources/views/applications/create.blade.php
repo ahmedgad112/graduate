@@ -14,6 +14,10 @@
                     <p class="mt-4 text-sm leading-relaxed text-slate-600">
                         املأ النموذج بعناية وارفع المستندات المطلوبة. بعد الإرسال ستقوم الإدارة بمراجعة طلبك وإنشاء ملفك الدائم عند الموافقة.
                     </p>
+                    <p class="mt-3 text-sm text-slate-600">
+                        لديك حساب خريج بالفعل؟
+                        <a href="{{ route('login') }}" class="font-semibold text-emerald-700 underline decoration-emerald-500/30 hover:text-emerald-800">تسجيل الدخول</a>
+                    </p>
                     <ul class="mt-6 space-y-3 text-sm text-slate-600">
                         <li class="flex items-start gap-2">
                             <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-500/80"></span>
@@ -62,7 +66,7 @@
                                 <input name="phone" value="{{ old('phone') }}" required class="w-full rounded-xl border border-white/60 bg-white/60 px-3 py-2 text-sm shadow-inner backdrop-blur focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-200/80" />
                             </div>
                             <div>
-                                <label class="mb-1 block text-sm font-medium text-slate-700">الرقم الوطني</label>
+                                <label class="mb-1 block text-sm font-medium text-slate-700">الرقم القومي</label>
                                 <input name="national_id" value="{{ old('national_id') }}" required class="w-full rounded-xl border border-white/60 bg-white/60 px-3 py-2 text-sm shadow-inner backdrop-blur focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-200/80" />
                             </div>
                             <div>
@@ -80,6 +84,15 @@
                             <div class="md:col-span-2">
                                 <label class="mb-1 block text-sm font-medium text-slate-700">العنوان</label>
                                 <textarea name="address" rows="2" required class="w-full rounded-xl border border-white/60 bg-white/60 px-3 py-2 text-sm shadow-inner backdrop-blur focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-200/80">{{ old('address') }}</textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="mb-1 block text-sm font-medium text-slate-700">المحافظة المقيم بها</label>
+                                <select name="governorate" required class="w-full rounded-xl border border-white/60 bg-white/60 px-3 py-2 text-sm shadow-inner backdrop-blur focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-200/80">
+                                    <option value="">— اختر المحافظة —</option>
+                                    @foreach (\App\Models\Application::governorateLabels() as $value => $label)
+                                        <option value="{{ $value }}" @selected(old('governorate') === $value)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div>
                                 <label class="mb-1 block text-sm font-medium text-slate-700">الجامعة</label>

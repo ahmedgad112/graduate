@@ -1,5 +1,7 @@
 @extends('layouts.admin')
 
+@php use App\Authorization\Permissions; @endphp
+
 @section('title', 'لوحة التحكم')
 
 @section('content')
@@ -60,7 +62,9 @@
             <div class="md:col-span-2 lg:col-span-4 flex flex-wrap gap-2">
                 <button type="submit" class="rounded-xl bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-md hover:bg-emerald-700">تطبيق التصفية</button>
                 <a href="{{ route('admin.dashboard') }}" class="rounded-xl border border-white/60 bg-white/50 px-5 py-2 text-sm font-semibold text-slate-800 backdrop-blur hover:bg-white/70">إعادة ضبط</a>
-                <a href="{{ route('admin.graduates.export', request()->query()) }}" class="rounded-xl bg-slate-800 px-5 py-2 text-sm font-semibold text-white shadow-md hover:bg-slate-900">تصدير Excel للنتائج الحالية</a>
+                @can(Permissions::GRADUATES_EXPORT)
+                    <a href="{{ route('admin.graduates.export', request()->query()) }}" class="rounded-xl bg-slate-800 px-5 py-2 text-sm font-semibold text-white shadow-md hover:bg-slate-900">تصدير Excel للنتائج الحالية</a>
+                @endcan
             </div>
         </form>
     </div>

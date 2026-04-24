@@ -48,6 +48,7 @@ class ApplicationController extends Controller
             'phone' => ['required', 'string', 'max:32', Rule::unique('applications', 'phone'), Rule::unique('users', 'phone')],
             'national_id' => ['required', 'string', 'max:32', Rule::unique('applications', 'national_id'), Rule::unique('profiles', 'national_id')],
             'address' => ['required', 'string', 'max:1000'],
+            'governorate' => ['required', 'string', Rule::in(array_keys(Application::GOVERNORATES))],
             'university_id' => ['required', 'exists:universities,id'],
             'department_id' => ['required', 'integer', Rule::exists('departments', 'id')->where(fn ($q) => $q->where('is_active', true))],
             'specialization_id' => ['required', 'integer', Rule::exists('specializations', 'id')->where(function ($q) use ($request) {
@@ -81,6 +82,7 @@ class ApplicationController extends Controller
             'phone' => $validated['phone'],
             'national_id' => $validated['national_id'],
             'address' => $validated['address'],
+            'governorate' => $validated['governorate'],
             'university_id' => $validated['university_id'],
             'department_id' => $validated['department_id'],
             'specialization_id' => $validated['specialization_id'],
@@ -102,15 +104,46 @@ class ApplicationController extends Controller
             ->with('status', __('تم استلام طلبك بنجاح. سيتم مراجعته من قبل الإدارة.'));
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $applications = Application::query()
+        $query = Application::query()
             ->with(['university', 'department', 'specialization', 'graduationYear'])
-            ->where('status', Application::STATUS_PENDING)
-            ->latest()
-            ->paginate(15);
+            ->where('status', Application::STATUS_PENDING);
 
-        return view('applications.index', compact('applications'));
+        if ($q = $request->string('q')->trim()->toString()) {
+            $query->where(function ($q2) use ($q) {
+                $q2->where('name', 'like', "%{$q}%")
+                    ->orWhere('email', 'like', "%{$q}%")
+                    ->orWhere('phone', 'like', "%{$q}%")
+                    ->orWhere('national_id', 'like', "%{$q}%")
+                    ->orWhereHas('university', fn ($u) => $u->where('name', 'like', "%{$q}%"))
+                    ->orWhereHas('department', fn ($d) => $d->where('name', 'like', "%{$q}%"))
+                    ->orWhereHas('specialization', fn ($s) => $s->where('name', 'like', "%{$q}%"));
+            });
+        }
+
+        if ($request->filled('university_id')) {
+            $query->where('university_id', $request->integer('university_id'));
+        }
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->integer('department_id'));
+        }
+        if ($request->filled('graduation_year_id')) {
+            $query->where('graduation_year_id', $request->integer('graduation_year_id'));
+        }
+
+        $applications = $query->latest()->paginate(15)->withQueryString();
+
+        $universities = University::query()->active()->orderBy('name')->get();
+        $departments = Department::query()->active()->orderBy('name')->get();
+        $graduationYears = GraduationYear::query()->active()->orderByDesc('year')->get();
+
+        return view('applications.index', compact(
+            'applications',
+            'universities',
+            'departments',
+            'graduationYears'
+        ));
     }
 
     public function show(Application $application): View
@@ -151,10 +184,13 @@ class ApplicationController extends Controller
                 'password' => $password,
                 'role' => User::ROLE_STUDENT,
             ]);
+            $user->assignRole(User::ROLE_STUDENT);
 
             Profile::query()->create([
                 'user_id' => $user->id,
                 'national_id' => $application->national_id,
+                'governorate' => $application->governorate,
+                'address' => $application->address,
                 'university_name' => $application->university->name,
                 'department_id' => $application->department_id,
                 'specialization_id' => $application->specialization_id,

@@ -2,14 +2,21 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasArabicActivityDescriptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Profile extends Model
 {
+    use HasArabicActivityDescriptions, LogsActivity;
+
     protected $fillable = [
         'user_id',
         'national_id',
+        'governorate',
+        'address',
         'university_name',
         'department_id',
         'specialization_id',
@@ -51,5 +58,16 @@ class Profile extends Model
     public function graduationYear(): BelongsTo
     {
         return $this->belongsTo(GraduationYear::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('profiles')
+            ->logFillable()
+            ->logExcept(['cv_path', 'cert_path', 'photo_path', 'national_id'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(self::arabicActivityDescription());
     }
 }

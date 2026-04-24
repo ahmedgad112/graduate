@@ -7,6 +7,7 @@ use App\Models\Application;
 use App\Models\Department;
 use App\Models\GraduationYear;
 use App\Models\Profile;
+use App\Models\Specialization;
 use App\Models\University;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -46,23 +47,69 @@ class DashboardController extends Controller
     {
         $graduationYears = GraduationYear::query()->active()->orderByDesc('year')->get();
 
-        $selectedGraduationYearId = $request->query('graduation_year_id');
-        $students = null;
-        $selectedGraduationYear = null;
+        $departmentsJson = Department::query()
+            ->active()
+            ->with(['specializations' => fn ($q) => $q->active()->orderBy('name')])
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Department $d) => [
+                'id' => $d->id,
+                'name' => $d->name,
+                'specializations' => $d->specializations->map(fn (Specialization $s) => [
+                    'id' => $s->id,
+                    'name' => $s->name,
+                ])->values(),
+            ])
+            ->values();
 
-        if ($selectedGraduationYearId !== null && $selectedGraduationYearId !== '') {
-            $selectedGraduationYear = GraduationYear::query()->find((int) $selectedGraduationYearId);
-            if ($selectedGraduationYear) {
-                $students = Profile::query()
-                    ->with(['user', 'department', 'specialization', 'graduationYear'])
-                    ->where('graduation_year_id', $selectedGraduationYear->id)
-                    ->orderBy('id')
-                    ->paginate(40)
-                    ->withQueryString();
+        $governorates = Application::GOVERNORATES;
+
+        $hasFilters = $request->filled('graduation_year_id')
+            || $request->filled('department_id')
+            || $request->filled('specialization_id')
+            || $request->filled('governorate');
+
+        $students = null;
+
+        if ($hasFilters) {
+            $query = Profile::query()
+                ->with(['user', 'department', 'specialization', 'graduationYear']);
+
+            if ($request->filled('graduation_year_id')) {
+                $query->where('graduation_year_id', (int) $request->input('graduation_year_id'));
             }
+            if ($request->filled('department_id')) {
+                $query->where('department_id', (int) $request->input('department_id'));
+            }
+            if ($request->filled('specialization_id')) {
+                $query->where('specialization_id', (int) $request->input('specialization_id'));
+            }
+            if ($request->filled('governorate')) {
+                $gov = (string) $request->input('governorate');
+                if (array_key_exists($gov, Application::GOVERNORATES)) {
+                    $query->where('governorate', $gov);
+                }
+            }
+
+            $students = $query
+                ->orderBy('profiles.id')
+                ->paginate(40)
+                ->withQueryString();
         }
 
-        return view('admin.students-by-year', compact('graduationYears', 'selectedGraduationYearId', 'selectedGraduationYear', 'students'));
+        return view('admin.students-by-year', compact(
+            'graduationYears',
+            'students',
+            'departmentsJson',
+            'governorates'
+        ));
+    }
+
+    public function showProfile(Profile $profile): View
+    {
+        $profile->load(['user', 'department', 'specialization', 'graduationYear']);
+
+        return view('admin.profiles.show', compact('profile'));
     }
 
     public function exportGraduates(Request $request): BinaryFileResponse

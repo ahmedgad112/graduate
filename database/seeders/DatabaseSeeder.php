@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,7 +20,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::query()->firstOrCreate(
+        $this->call(RolePermissionSeeder::class);
+
+        $admin = User::query()->firstOrCreate(
             ['email' => 'admin@graduate.local'],
             [
                 'name' => 'مدير النظام',
@@ -28,6 +31,18 @@ class DatabaseSeeder extends Seeder
                 'role' => User::ROLE_ADMIN,
             ]
         );
+        $admin->syncRoles([User::ROLE_ADMIN]);
+
+        $reviewer = User::query()->firstOrCreate(
+            ['email' => 'reviewer@graduate.local'],
+            [
+                'name' => 'مراجع الطلبات',
+                'phone' => null,
+                'password' => Hash::make('password'),
+                'role' => User::ROLE_REVIEWER,
+            ]
+        );
+        $reviewer->syncRoles([User::ROLE_REVIEWER]);
 
         University::query()->firstOrCreate(
             ['name' => 'جامعة نموذجية'],
@@ -55,5 +70,14 @@ class DatabaseSeeder extends Seeder
             ['name' => 'هندسة الشبكات'],
             ['is_active' => true]
         );
+
+        $roleNames = Role::query()->where('guard_name', 'web')->pluck('name')->all();
+        User::query()->orderBy('id')->chunkById(100, function ($users) use ($roleNames): void {
+            $users->each(function (User $user) use ($roleNames): void {
+                if (in_array($user->role, $roleNames, true)) {
+                    $user->syncRoles([$user->role]);
+                }
+            });
+        });
     }
 }

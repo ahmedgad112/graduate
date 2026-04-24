@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasArabicActivityDescriptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Application extends Model
 {
+    use HasArabicActivityDescriptions, LogsActivity;
+
     public const STATUS_PENDING = 'pending';
 
     public const STATUS_APPROVED = 'approved';
@@ -20,6 +25,41 @@ class Application extends Model
     public const EMPLOYMENT_SEEKING = 'seeking';
 
     public const EMPLOYMENT_UNEMPLOYED = 'unemployed';
+
+    /**
+     * محافظات مصر (مفتاح إنجليزي مختصر للتخزين، التسمية بالعربية للعرض).
+     *
+     * @var array<string, string>
+     */
+    public const GOVERNORATES = [
+        'cairo' => 'القاهرة',
+        'giza' => 'الجيزة',
+        'alexandria' => 'الإسكندرية',
+        'qalyubia' => 'القليوبية',
+        'beheira' => 'البحيرة',
+        'matrouh' => 'مطروح',
+        'damietta' => 'دمياط',
+        'dakahlia' => 'الدقهلية',
+        'sharqia' => 'الشرقية',
+        'kafr_el_sheikh' => 'كفر الشيخ',
+        'gharbia' => 'الغربية',
+        'monufia' => 'المنوفية',
+        'port_said' => 'بورسعيد',
+        'ismailia' => 'الإسماعيلية',
+        'suez' => 'السويس',
+        'north_sinai' => 'شمال سيناء',
+        'south_sinai' => 'جنوب سيناء',
+        'red_sea' => 'البحر الأحمر',
+        'fayoum' => 'الفيوم',
+        'beni_suef' => 'بني سويف',
+        'minya' => 'المنيا',
+        'asyut' => 'أسيوط',
+        'sohag' => 'سوهاج',
+        'qena' => 'قنا',
+        'luxor' => 'الأقصر',
+        'aswan' => 'أسوان',
+        'new_valley' => 'الوادي الجديد',
+    ];
 
     /** @return list<string> */
     public static function employmentStatuses(): array
@@ -37,6 +77,7 @@ class Application extends Model
         'phone',
         'national_id',
         'address',
+        'governorate',
         'university_id',
         'department_id',
         'specialization_id',
@@ -89,6 +130,14 @@ class Application extends Model
     /**
      * @return array<string, string>
      */
+    public static function governorateLabels(): array
+    {
+        return self::GOVERNORATES;
+    }
+
+    /**
+     * @return array<string, string>
+     */
     public static function gradeLabels(): array
     {
         return [
@@ -130,5 +179,16 @@ class Application extends Model
             self::STATUS_APPROVED => 'موافق عليه',
             self::STATUS_REJECTED => 'مرفوض',
         ];
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('applications')
+            ->logFillable()
+            ->logExcept(['cv_path', 'cert_path', 'photo_path', 'national_id'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(self::arabicActivityDescription());
     }
 }

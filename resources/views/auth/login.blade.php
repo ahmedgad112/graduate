@@ -6,8 +6,8 @@
     <div class="flex min-h-screen items-center justify-center px-4 py-12">
         <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.12),transparent_45%),radial-gradient(circle_at_70%_10%,rgba(14,165,233,0.1),transparent_40%)]"></div>
         <div class="relative w-full max-w-md rounded-3xl border border-white/55 bg-white/45 p-8 shadow-2xl shadow-emerald-900/10 backdrop-blur-2xl">
-            <h1 class="text-xl font-bold text-slate-900">دخول لوحة الإدارة</h1>
-            <p class="mt-1 text-sm text-slate-600">يُسمح لحسابات المشرفين فقط.</p>
+            <h1 class="text-xl font-bold text-slate-900">تسجيل الدخول</h1>
+            <p class="mt-1 text-sm text-slate-600">حسابات الإدارة والمراجعة، أو حساب الخريج لعرض ملفه وتحديث بياناته.</p>
 
             @if ($errors->any())
                 <div class="mt-4 rounded-2xl border border-rose-200/70 bg-rose-50/85 px-4 py-3 text-sm text-rose-900">

@@ -9,3 +9,37 @@
     --font-sans: 'Cairo', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+    /* تمرير مريح على iOS + منع “سلسلة” التمرير عند بلوغ حافة القائمة */
+    [data-nav-scroll] {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+    html[data-admin-nav='open'] {
+        overflow: hidden;
+    }
+    @media (min-width: 1024px) {
+        html[data-admin-nav='open'] {
+            overflow: unset;
+        }
+    }
+    /* أيقونات زر القائمة في رأس الموبايل: يتم التبديل بـ data-admin-nav من JS */
+    .admin-burger__close {
+        display: none;
+    }
+    html[data-admin-nav='open'] .admin-burger__open {
+        display: none;
+    }
+    html[data-admin-nav='open'] .admin-burger__close {
+        display: flex;
+    }
+}

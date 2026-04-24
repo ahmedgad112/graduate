@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,17 +32,41 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
-        if (! $user || ! $user->isAdmin()) {
+        if (! $user instanceof User) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
             return back()->withErrors([
-                'email' => __('هذه الواجهة مخصصة للإدارة فقط.'),
+                'email' => __('تعذر تسجيل الدخول.'),
             ])->onlyInput('email');
         }
 
-        return redirect()->intended(route('admin.dashboard'));
+        if ($user->canAccessAdminPanel()) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        if ($user->isStudent()) {
+            if (! $user->profile) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => __('لا يوجد ملف خريج مرتبط بهذا الحساب. تواصل مع الإدارة.'),
+                ])->onlyInput('email');
+            }
+
+            return redirect()->intended(route('profile.edit'));
+        }
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return back()->withErrors([
+            'email' => __('لا يمكنك الدخول بهذا الحساب.'),
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request): RedirectResponse
