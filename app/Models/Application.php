@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasArabicActivityDescriptions;
+use Database\Factories\ApplicationFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
@@ -10,7 +12,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Application extends Model
 {
-    use HasArabicActivityDescriptions, LogsActivity;
+    /** @use HasFactory<ApplicationFactory> */
+    use HasArabicActivityDescriptions, HasFactory, LogsActivity;
 
     public const STATUS_PENDING = 'pending';
 
