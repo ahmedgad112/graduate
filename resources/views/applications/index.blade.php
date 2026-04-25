@@ -42,6 +42,14 @@
                                 <dd class="mt-px break-words text-slate-800">{{ $application->phone }}</dd>
                             </div>
                             <div class="min-w-0">
+                                <dt class="text-[9px] text-slate-500">المحافظة</dt>
+                                <dd class="mt-px break-words text-slate-800">{{ $application->governorate ? (\App\Models\Application::GOVERNORATES[$application->governorate] ?? $application->governorate) : '—' }}</dd>
+                            </div>
+                            <div class="min-w-0 sm:col-span-2 lg:col-span-1">
+                                <dt class="text-[9px] text-slate-500">المنطقة</dt>
+                                <dd class="mt-px break-words text-slate-800">{{ $application->residence_region ?: '—' }}</dd>
+                            </div>
+                            <div class="min-w-0">
                                 <dt class="text-[9px] text-slate-500">الجامعة</dt>
                                 <dd class="mt-px break-words text-slate-800">{{ $application->university?->name ?? '—' }}</dd>
                             </div>

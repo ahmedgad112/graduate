@@ -40,6 +40,10 @@
                         {{ $profile->governorate ? (Application::GOVERNORATES[$profile->governorate] ?? $profile->governorate) : '—' }}
                     </dd>
                 </div>
+                <div>
+                    <dt class="text-xs font-medium text-slate-500">المنطقة / الحي</dt>
+                    <dd class="text-sm text-slate-900">{{ $profile->residence_region ?: '—' }}</dd>
+                </div>
                 <div class="sm:col-span-2">
                     <dt class="text-xs font-medium text-slate-500">العنوان</dt>
                     <dd class="text-sm text-slate-900">{{ $profile->address ? $profile->address : '—' }}</dd>

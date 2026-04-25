@@ -40,6 +40,7 @@ class ProfileController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => ['required', 'string', 'max:32', Rule::unique('users', 'phone')->ignore($user->id)],
             'governorate' => ['required', 'string', Rule::in(array_keys(Application::GOVERNORATES))],
+            'residence_region' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:1000'],
             'skills' => ['nullable', 'string', 'max:5000'],
             'certificates_text' => ['nullable', 'string', 'max:5000'],
@@ -69,6 +70,7 @@ class ProfileController extends Controller
 
         $profileData = [
             'governorate' => $validated['governorate'],
+            'residence_region' => $validated['residence_region'],
             'address' => $validated['address'],
             'skills' => $validated['skills'] ?? null,
             'certificates_text' => $validated['certificates_text'] ?? null,

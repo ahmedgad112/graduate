@@ -138,6 +138,14 @@
                                             <p class="text-right text-xs leading-tight text-slate-800" dir="ltr">{{ $profile->national_id ?? '—' }}</p>
                                         </div>
                                         <div>
+                                            <p class="text-[0.65rem] font-medium text-slate-500">المحافظة</p>
+                                            <p class="text-xs leading-tight text-slate-800">{{ $profile->governorate ? (\App\Models\Application::GOVERNORATES[$profile->governorate] ?? $profile->governorate) : '—' }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[0.65rem] font-medium text-slate-500">المنطقة / الحي</p>
+                                            <p class="text-xs leading-tight text-slate-800">{{ $profile->residence_region ?: '—' }}</p>
+                                        </div>
+                                        <div>
                                             <p class="text-[0.65rem] font-medium text-slate-500">الجامعة</p>
                                             <p class="text-xs leading-tight text-slate-800">{{ $profile->university_name ?? '—' }}</p>
                                         </div>

@@ -49,6 +49,7 @@ class ApplicationController extends Controller
             'national_id' => ['required', 'string', 'max:32', Rule::unique('applications', 'national_id'), Rule::unique('profiles', 'national_id')],
             'address' => ['required', 'string', 'max:1000'],
             'governorate' => ['required', 'string', Rule::in(array_keys(Application::GOVERNORATES))],
+            'residence_region' => ['required', 'string', 'max:255'],
             'university_id' => ['required', 'exists:universities,id'],
             'department_id' => ['required', 'integer', Rule::exists('departments', 'id')->where(fn ($q) => $q->where('is_active', true))],
             'specialization_id' => ['required', 'integer', Rule::exists('specializations', 'id')->where(function ($q) use ($request) {
@@ -83,6 +84,7 @@ class ApplicationController extends Controller
             'national_id' => $validated['national_id'],
             'address' => $validated['address'],
             'governorate' => $validated['governorate'],
+            'residence_region' => $validated['residence_region'],
             'university_id' => $validated['university_id'],
             'department_id' => $validated['department_id'],
             'specialization_id' => $validated['specialization_id'],
@@ -116,6 +118,7 @@ class ApplicationController extends Controller
                     ->orWhere('email', 'like', "%{$q}%")
                     ->orWhere('phone', 'like', "%{$q}%")
                     ->orWhere('national_id', 'like', "%{$q}%")
+                    ->orWhere('residence_region', 'like', "%{$q}%")
                     ->orWhereHas('university', fn ($u) => $u->where('name', 'like', "%{$q}%"))
                     ->orWhereHas('department', fn ($d) => $d->where('name', 'like', "%{$q}%"))
                     ->orWhereHas('specialization', fn ($s) => $s->where('name', 'like', "%{$q}%"));
@@ -190,6 +193,7 @@ class ApplicationController extends Controller
                 'user_id' => $user->id,
                 'national_id' => $application->national_id,
                 'governorate' => $application->governorate,
+                'residence_region' => $application->residence_region,
                 'address' => $application->address,
                 'university_name' => $application->university->name,
                 'department_id' => $application->department_id,

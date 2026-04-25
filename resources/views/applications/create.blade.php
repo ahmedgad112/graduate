@@ -6,32 +6,42 @@
     <div class="relative min-h-screen overflow-hidden">
         <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.12),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.12),transparent_40%),radial-gradient(circle_at_50%_80%,rgba(120,113,108,0.08),transparent_45%)]"></div>
 
-        <div class="relative mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-4 py-10 lg:flex-row lg:items-stretch lg:px-8">
-            <section class="flex flex-1 flex-col justify-center lg:max-w-md">
-                <div class="rounded-3xl border border-white/50 bg-white/40 p-8 shadow-xl shadow-emerald-900/5 backdrop-blur-xl">
-                    <p class="text-sm font-medium text-emerald-700/90">بوابة الخريجين</p>
-                    <h1 class="mt-2 text-3xl font-bold text-slate-900">سجّل بياناتك الأكاديمية</h1>
-                    <p class="mt-4 text-sm leading-relaxed text-slate-600">
-                        املأ النموذج بعناية وارفع المستندات المطلوبة. بعد الإرسال ستقوم الإدارة بمراجعة طلبك وإنشاء ملفك الدائم عند الموافقة.
-                    </p>
-                    <p class="mt-3 text-sm text-slate-600">
-                        لديك حساب خريج بالفعل؟
-                        <a href="{{ route('login') }}" class="font-semibold text-emerald-700 underline decoration-emerald-500/30 hover:text-emerald-800">تسجيل الدخول</a>
-                    </p>
-                    <ul class="mt-6 space-y-3 text-sm text-slate-600">
-                        <li class="flex items-start gap-2">
-                            <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-500/80"></span>
-                            <span>تأكد من صحة البريد والهاتف؛ ستُستخدم لإنشاء حسابك.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-sky-500/80"></span>
-                            <span>الملفات: السيرة الذاتية والشهادة بصيغة PDF، وصورة شخصية واضحة.</span>
-                        </li>
-                    </ul>
+        <div class="relative mx-auto flex min-h-screen w-full flex-col items-stretch gap-8 px-4 py-10 sm:px-6 lg:px-10">
+            <section class="w-full shrink-0">
+                <div class="w-full rounded-3xl border border-white/50 bg-white/40 p-8 shadow-xl shadow-emerald-900/5 backdrop-blur-xl sm:p-10">
+                    <div class="mx-auto flex w-full max-w-2xl flex-col items-center text-center">
+                        <img
+                            src="{{ asset('images/logo.png') }}"
+                            alt="{{ config('app.name') }}"
+                            class="h-28 w-auto max-h-44 max-w-[min(100%,24rem)] object-contain sm:h-32 md:h-36 lg:h-40"
+                            width="320"
+                            height="128"
+                            decoding="async"
+                        />
+                        <p class="mt-6 text-sm font-medium tracking-wide text-emerald-700/90">بوابة الخريجين</p>
+                        <h1 class="mt-2 text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">سجّل بياناتك الأكاديمية</h1>
+                        <p class="mt-4 max-w-lg text-pretty text-sm leading-relaxed text-slate-600 sm:text-base">
+                            املأ النموذج بعناية وارفع المستندات المطلوبة. بعد الإرسال ستقوم الإدارة بمراجعة طلبك وإنشاء ملفك الدائم عند الموافقة.
+                        </p>
+                        <p class="mt-4 text-sm text-slate-600">
+                            لديك حساب خريج بالفعل؟
+                            <a href="{{ route('login') }}" class="font-semibold text-emerald-700 underline decoration-emerald-500/40 underline-offset-2 transition hover:text-emerald-800">تسجيل الدخول</a>
+                        </p>
+                        <ul class="mt-8 w-full max-w-md space-y-4 border-t border-white/50 pt-8 text-sm text-slate-600">
+                            <li class="flex items-start justify-center gap-2.5 text-start">
+                                <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-emerald-500/90 ring-2 ring-emerald-500/20" aria-hidden="true"></span>
+                                <span class="max-w-sm leading-relaxed">تأكد من صحة البريد والهاتف؛ ستُستخدم لإنشاء حسابك.</span>
+                            </li>
+                            <li class="flex items-start justify-center gap-2.5 text-start">
+                                <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-sky-500/90 ring-2 ring-sky-500/20" aria-hidden="true"></span>
+                                <span class="max-w-sm leading-relaxed">الملفات: السيرة الذاتية والشهادة بصيغة PDF، وصورة شخصية واضحة.</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 
-            <section class="flex flex-[1.35] items-center">
+            <section class="w-full min-w-0 flex-1">
                 <div class="w-full rounded-3xl border border-white/55 bg-white/45 p-6 shadow-2xl shadow-emerald-900/10 backdrop-blur-2xl md:p-8">
                     @if (session('status'))
                         <div class="mb-6 rounded-2xl border border-emerald-200/60 bg-emerald-50/85 px-4 py-3 text-sm text-emerald-900 backdrop-blur-md">
@@ -85,7 +95,7 @@
                                 <label class="mb-1 block text-sm font-medium text-slate-700">العنوان</label>
                                 <textarea name="address" rows="2" required class="w-full rounded-xl border border-white/60 bg-white/60 px-3 py-2 text-sm shadow-inner backdrop-blur focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-200/80">{{ old('address') }}</textarea>
                             </div>
-                            <div class="md:col-span-2">
+                            <div>
                                 <label class="mb-1 block text-sm font-medium text-slate-700">المحافظة المقيم بها</label>
                                 <select name="governorate" required class="w-full rounded-xl border border-white/60 bg-white/60 px-3 py-2 text-sm shadow-inner backdrop-blur focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-200/80">
                                     <option value="">— اختر المحافظة —</option>
@@ -93,6 +103,10 @@
                                         <option value="{{ $value }}" @selected(old('governorate') === $value)>{{ $label }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div>
+                                <label class="mb-1 block text-sm font-medium text-slate-700">المنطقة / الحي (مكان الإقامة)</label>
+                                <input name="residence_region" value="{{ old('residence_region') }}" required placeholder="مثال: حي، مركز، إدارة…" class="w-full rounded-xl border border-white/60 bg-white/60 px-3 py-2 text-sm shadow-inner backdrop-blur focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-200/80" />
                             </div>
                             <div>
                                 <label class="mb-1 block text-sm font-medium text-slate-700">الجامعة</label>

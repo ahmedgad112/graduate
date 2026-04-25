@@ -78,6 +78,7 @@ class Application extends Model
         'national_id',
         'address',
         'governorate',
+        'residence_region',
         'university_id',
         'department_id',
         'specialization_id',

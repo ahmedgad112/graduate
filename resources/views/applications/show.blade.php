@@ -92,6 +92,10 @@
                             <dt class="text-[11px] font-semibold text-slate-500">المحافظة</dt>
                             <dd class="mt-0.5 font-medium text-slate-900">{{ Application::GOVERNORATES[$application->governorate] ?? ($application->governorate ?: '—') }}</dd>
                         </div>
+                        <div class="{{ $fieldBox }}">
+                            <dt class="text-[11px] font-semibold text-slate-500">المنطقة / الحي</dt>
+                            <dd class="mt-0.5 font-medium text-slate-900">{{ $application->residence_region ?: '—' }}</dd>
+                        </div>
                         <div class="{{ $fieldBox }} sm:col-span-2">
                             <dt class="text-[11px] font-semibold text-slate-500">العنوان</dt>
                             <dd class="mt-0.5 font-medium leading-relaxed text-slate-900">{{ $application->address }}</dd>

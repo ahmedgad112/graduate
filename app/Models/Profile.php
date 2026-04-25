@@ -16,6 +16,7 @@ class Profile extends Model
         'user_id',
         'national_id',
         'governorate',
+        'residence_region',
         'address',
         'university_name',
         'department_id',

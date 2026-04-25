@@ -103,6 +103,10 @@
                             @endforeach
                         </select>
                     </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-slate-700">المنطقة / الحي (مكان الإقامة)</label>
+                        <input name="residence_region" value="{{ old('residence_region', $profile->residence_region) }}" required placeholder="الحي، المركز، الإدارة…" class="w-full rounded-xl border border-white/60 bg-white/60 px-3 py-2 text-sm shadow-inner backdrop-blur focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-200/80" />
+                    </div>
                 </div>
             </div>
 

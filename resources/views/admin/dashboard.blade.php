@@ -77,6 +77,8 @@
                         <th class="px-4 py-3">الاسم</th>
                         <th class="px-4 py-3">البريد</th>
                         <th class="px-4 py-3">الهاتف</th>
+                        <th class="px-4 py-3">المحافظة</th>
+                        <th class="px-4 py-3">المنطقة</th>
                         <th class="px-4 py-3">الجامعة</th>
                         <th class="px-4 py-3">القسم</th>
                         <th class="px-4 py-3">التخصص</th>
@@ -94,6 +96,8 @@
                             <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-900">{{ $user?->name }}</td>
                             <td class="px-4 py-3 text-slate-700">{{ $user?->email }}</td>
                             <td class="px-4 py-3 text-slate-700">{{ $user?->phone }}</td>
+                            <td class="px-4 py-3 text-slate-700">{{ $profile->governorate ? (\App\Models\Application::GOVERNORATES[$profile->governorate] ?? $profile->governorate) : '—' }}</td>
+                            <td class="max-w-[140px] px-4 py-3 text-slate-700">{{ $profile->residence_region ?: '—' }}</td>
                             <td class="px-4 py-3 text-slate-700">{{ $profile->university_name }}</td>
                             <td class="px-4 py-3 text-slate-700">{{ $profile->department?->name ?? '—' }}</td>
                             <td class="px-4 py-3 text-slate-700">{{ $profile->specialization?->name ?? '—' }}</td>
@@ -105,7 +109,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="11" class="px-4 py-10 text-center text-slate-600">لا يوجد خريجون مطابقون للتصفية.</td>
+                            <td colspan="13" class="px-4 py-10 text-center text-slate-600">لا يوجد خريجون مطابقون للتصفية.</td>
                         </tr>
                     @endforelse
                 </tbody>
